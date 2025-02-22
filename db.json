@@ -1,0 +1,67 @@
+{
+  "rooms": [
+    {
+      "id": 1,
+      "name": "Deluxe Ocean View",
+      "description": "Spacious room with stunning ocean views and private balcony",
+      "price": 299,
+      "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800",
+      "capacity": 2,
+      "rating": 4.8
+    },
+    {
+      "id": 2,
+      "name": "Executive Suite",
+      "description": "Luxury suite with separate living area and city skyline views",
+      "price": 399,
+      "image": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800",
+      "capacity": 3,
+      "rating": 4.9
+    },
+    {
+      "id": 3,
+      "name": "Family Room",
+      "description": "Perfect for families, featuring two queen beds and extra space",
+      "price": 349,
+      "image": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800",
+      "capacity": 4,
+      "rating": 4.7
+    },
+    {
+      "id": 4,
+      "name": "Deluxe Ocean View",
+      "description": "Spacious room with stunning ocean views and private balcony",
+      "price": 299,
+      "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800",
+      "capacity": 2,
+      "rating": 4.8
+    },
+    {
+      "id": 5,
+      "name": "Executive Suite",
+      "description": "Luxury suite with separate living area and city skyline views",
+      "price": 399,
+      "image": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800",
+      "capacity": 3,
+      "rating": 4.9
+    },
+    {
+      "id": 6,
+      "name": "Family Room",
+      "description": "Perfect for families, featuring two queen beds and extra space",
+      "price": 349,
+      "image": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800",
+      "capacity": 4,
+      "rating": 4.7
+    },
+    {
+      "id": 7,
+      "name": "Sharja",
+      "description": "this is the best room for Sharja hotel",
+      "price": "300",
+      "image": "data:image/jpeg;base64,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",
+      "capacity": "3",
+      "rating": 2
+    }
+  ]
+}
