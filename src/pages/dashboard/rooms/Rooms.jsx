@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { collection, addDoc } from "firebase/firestore"; 
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
-import axios from 'axios';
+import { db } from '../../../firebaseConfig';
 
 const Rooms = () => {
 
@@ -16,14 +17,24 @@ const Rooms = () => {
 
     const handleSubmitData = async () => {
 
-       await axios.post("http://localhost:3000/rooms",{
-        name: roomName,
-        description: roomDisc,
-        price: price,
-        image: imgURL,
-        capacity: capicity,
-        rating: rating
-       })
+        const collectionRef = await addDoc(collection(db, "rooms"),{
+            name: roomName,
+            description: roomDisc,
+            price: price,
+            image: imgURL,
+            capacity: capicity,
+            rating: rating,
+            roomStatus: roomStatus
+           })
+
+           setRoomName("")
+           setRoomDisc("")
+           setImgURL("")
+           setRoomStatus("")
+           setCapicity("")
+           setRating("")
+           setPrice("")
+
 
     }
 

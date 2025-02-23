@@ -8,9 +8,9 @@ import ChevronLeftOutlinedIcon from '@mui/icons-material/ChevronLeftOutlined';
 import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
 import { useNavigate } from 'react-router-dom';
 
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchData } from '../../store/slices/asyncTaskSlice'
 import axios from 'axios';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebaseConfig';
 
 function App() {
 
@@ -24,9 +24,14 @@ function App() {
 
   const fetchDataFromApi = async () => {  
 
-  const response = await axios.get("http://localhost:3000/rooms") 
+    const roomSnap = await getDocs(collection(db,"rooms"));
 
-  setRooms(response.data)
+    const data = roomSnap.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }))
+
+  setRooms(data)
   
 
   }
@@ -85,7 +90,7 @@ function App() {
             <BedOutlinedIcon className="h-8 w-8 text-blue-600" />
             <h1 className="ml-2 text-2xl font-bold text-gray-900">Room Booking</h1>
           </div>
-          <button onClick={handleSignIn} className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center justify-center mt-6'>Sign In</button>
+          <button onClick={handleSignIn} className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center justify-center '>Sign In</button>
             
         </div>
       </header>
@@ -227,7 +232,7 @@ function App() {
                     <span className="text-gray-600">/night</span>
                   </div>
                 </div>
-                <button className="mt-4 w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                <button onClick={() => { navigate("/login") }} className="mt-4 w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
                   Book Now
                 </button>
               </div>

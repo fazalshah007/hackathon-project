@@ -10,6 +10,9 @@ import Users from "./pages/dashboard/users/Users";
 import Customer from "./pages/screens/Customer";
 import BookRoom from "./pages/screens/BookRoom";
 import Rooms from "./pages/dashboard/rooms/Rooms";
+import Profile from "./pages/screens/Profile";
+import AllRooms from "./pages/dashboard/rooms/AllRooms";
+import Inventory from "./pages/dashboard/inventory/Inventory";
 
 function App() {
 
@@ -48,13 +51,17 @@ function App() {
 
         {/* user routes */}
         <Route exac path="/" element={userID && userData?.role === "user" ? (<Customer />) : (<Home /> )} />
-        <Route path="/home" element={userID && userData?.role === "user" ? (<Customer />) : (<Navigate to='/login' replace />)} />
+        <Route path="/home" element={userID && userData?.role === "user" ? (<Customer />) : (<Navigate to='/login' replace />)} >
+            <Route path="profile/" element={<Profile />} />
+        </Route>
         <Route path="/customer/:id" element={userID && userData?.role === "user" ? (<BookRoom />) : (<Navigate to='/login' replace />)} />
 
         {/* admin routes  */}
         <Route path="/admin" element={userID && userData?.role === "admin" ? (<Dashboard setUserID={setUserID} />) : (<Navigate to='/login' replace />)} >
           <Route path="users" element={ <Users /> } />
           <Route path="rooms" element={ <Rooms /> } />
+          <Route path="allrooms" element={ <AllRooms /> } />
+          <Route path="inventory" element={ <Inventory /> } />
         </Route>
 
         <Route path="/login" element={userID && userData?.role === "user" ? (<Navigate to='/home' replace />) : userID && userData?.role === "admin" ? (<Navigate to='/admin' replace />) : (<SignIn setUserID={setUserID} setUserData={setUserData} />) } />

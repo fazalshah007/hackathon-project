@@ -21,6 +21,7 @@ const Dashboard = ({ setUserID }) => {
   // menu options states here 
   const [users, setUsers] = useState(false);
   const [rooms, setRooms] = useState(false);
+  const [inventory, setInventory] = useState(false);
 
 
   const signOut = () => {
@@ -88,6 +89,31 @@ const Dashboard = ({ setUserID }) => {
         <Collapse in={rooms}>
           <div className="pl-4">
           <Link className="p-2 hover:bg-gray-700 rounded block" to={`/admin/rooms`}>Create Room</Link> 
+          <Link className="p-2 hover:bg-gray-700 rounded block" to={`/admin/allrooms`}>All Rooms</Link> 
+       
+          </div>
+        </Collapse>
+
+          {/* menu collapesible here  */}
+          
+          
+          {/* menu collapesible here  */}
+
+        <div className="cursor-pointer mt-4" onClick={() => setInventory(!inventory)}>
+          <div className="flex items-center justify-between p-2 hover:bg-gray-700 rounded">
+            <div>
+            <BedOutlinedIcon className='mr-2' />
+            {isSidebarOpen && <span>Inventory</span>}
+            </div>
+            {isSidebarOpen && (inventory ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />)}
+          </div>
+        </div>
+       
+
+        <Collapse in={inventory}>
+          <div className="pl-4">
+          <Link className="p-2 hover:bg-gray-700 rounded block" to={`/admin/inventory`}>All Inventories</Link> 
+          {/* <Link className="p-2 hover:bg-gray-700 rounded block" to={`/admin/allrooms`}>All Rooms</Link>  */}
        
           </div>
         </Collapse>
