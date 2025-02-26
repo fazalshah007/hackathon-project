@@ -7,9 +7,12 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import PaymentIcon from '@mui/icons-material/Payment';
 
 import { Collapse } from "@mui/material";
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
+import States from './States';
 
 const Dashboard = ({ setUserID }) => {
 
@@ -105,7 +108,7 @@ const Dashboard = ({ setUserID }) => {
         <div className="cursor-pointer mt-4" onClick={() => setInventory(!inventory)}>
           <div className="flex items-center justify-between p-2 hover:bg-gray-700 rounded">
             <div>
-            <BedOutlinedIcon className='mr-2' />
+            <InventoryIcon className='mr-2' />
             {isSidebarOpen && <span>Inventory</span>}
             </div>
             {isSidebarOpen && (inventory ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />)}
@@ -130,7 +133,7 @@ const Dashboard = ({ setUserID }) => {
         <div className="cursor-pointer mt-4" onClick={() => setPayment(!payment)}>
           <div className="flex items-center justify-between p-2 hover:bg-gray-700 rounded">
             <div>
-            <BedOutlinedIcon className='mr-2' />
+            <PaymentIcon className='mr-2' />
             {isSidebarOpen && <span>Payment</span>}
             </div>
             {isSidebarOpen && (payment ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />)}
@@ -170,12 +173,9 @@ const Dashboard = ({ setUserID }) => {
               location.pathname === "/admin" ? (
 
                 // dashboard admin home page code here ...
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                  <div className='bg-green-300'>hello</div>
-                  <div className='bg-green-300'>hello</div>
-                  <div className='bg-green-300'>hello</div>
+                
+                <States />
                   
-                </div>
                 // <Loader />
 
               ) : (
