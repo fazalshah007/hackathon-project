@@ -9,9 +9,11 @@ import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 import { Collapse } from "@mui/material";
-import { Outlet, useLocation, Link } from 'react-router-dom'
+import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 
 const Dashboard = ({ setUserID }) => {
+
+  const navigate = useNavigate()
 
   const location = useLocation()
 
@@ -22,6 +24,7 @@ const Dashboard = ({ setUserID }) => {
   const [users, setUsers] = useState(false);
   const [rooms, setRooms] = useState(false);
   const [inventory, setInventory] = useState(false);
+  const [payment, setPayment] = useState(false);
 
 
   const signOut = () => {
@@ -35,10 +38,10 @@ const Dashboard = ({ setUserID }) => {
      isLoading ? (<Loader />) : (
       <>
       
-      <div className="flex h-screen">
+      <div className="flex h-screen no-scrollbar">
       {/* Sidebar */}
       <div
-        className={`bg-gray-800 text-white p-4 transition-all duration-300 overflow-y-auto ${
+        className={`bg-gray-800 text-white p-4 transition-all duration-300  ${
           isSidebarOpen ? "w-48 md:w-64" : "w-16"
         }`}
       >
@@ -120,24 +123,48 @@ const Dashboard = ({ setUserID }) => {
 
           {/* menu collapesible here  */}
           
+          
+          
+          {/* menu collapesible here  */}
+
+        <div className="cursor-pointer mt-4" onClick={() => setPayment(!payment)}>
+          <div className="flex items-center justify-between p-2 hover:bg-gray-700 rounded">
+            <div>
+            <BedOutlinedIcon className='mr-2' />
+            {isSidebarOpen && <span>Payment</span>}
+            </div>
+            {isSidebarOpen && (payment ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />)}
+          </div>
+        </div>
+       
+
+        <Collapse in={payment}>
+          <div className="pl-4">
+          <Link className="p-2 hover:bg-gray-700 rounded block" to={`/admin/payment`}>Payment View</Link> 
+       
+          </div>
+        </Collapse>
+
+          {/* menu collapesible here  */}
+          
         </div>
        
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col no-scrollbar">
         {/* Navbar */}
         <div className="bg-gray-800 text-white shadow p-4 flex justify-between">
-          <h1 className="text-lg font-bold">Dashboard</h1>
+          <h1 onClick={() => { navigate("/admin") }} className="text-lg font-bold hover:text-gray-400">Dashboard</h1>
           <div>
             <button className='cursor-pointer ' onClick={signOut} ><ExitToAppIcon /></button>
           </div>
         </div>
 
         {/* Core Content */}
-        <div className="p-4 grid place-items-center h-screen">
+        <div className="p-4 grid place-items-center h-[85%]">
      
-          <div className='h-full w-full'>
+          <div className='h-full w-full overflow-y-scroll no-scrollbar'>
 
             {
               location.pathname === "/admin" ? (
@@ -155,7 +182,9 @@ const Dashboard = ({ setUserID }) => {
 
                 // nested routing all component will be rendered here ...
                 
-                <Outlet />
+                <div className=''>
+                  <Outlet />
+                </div>
               )
             }
  

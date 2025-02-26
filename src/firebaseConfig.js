@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBUZqJ3CRX0pPQfNe5EvQTAGYCAe2OwTuE",
+  apiKey: "",
   authDomain: "react-hackathon-05.firebaseapp.com",
   projectId: "react-hackathon-05",
   storageBucket: "react-hackathon-05.firebasestorage.app",

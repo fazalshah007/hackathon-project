@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { db } from '../../../firebaseConfig';
 import { collection, getDocs } from "firebase/firestore";
 import Loader from '../../../components/Loader';
+import { DataGrid } from '@mui/x-data-grid';
+import Paper from '@mui/material/Paper';
 
 
 
@@ -9,6 +11,7 @@ const Products = () => {
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState([])
+  const [rows, setRows] = useState([])
 
 const fetchDataFromUsers = async () => {
 
@@ -22,13 +25,14 @@ const userData = usersSnap.docs.map((doc) => ({
 }));
 
 const adminData = adminSnap.docs.map((doc) => ({
-  id: doc.id,
+  id: doc.id+"admin",
   ...doc.data(),
 }));
 
 const mergeData = [...userData, ...adminData]
 
-setUser(mergeData)
+setRows(mergeData)
+
 setLoading(false)
 
 
@@ -41,45 +45,34 @@ useEffect(() => {
 },[])
 
 
+const columns = [
+  { field: 'id', headerName: 'ID', width: 350 },
+  { field: 'email', headerName: 'Email', width: 250 },
+  { field: 'role', headerName: 'Role', width: 130 },
+  
+];
+
+const paginationModel = { page: 0, pageSize: 5 }
+
+
   return (
 <>
     {
       loading ? (<Loader />) : (
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-        <table className="min-w-full table-auto hidden sm:table">
-          <thead>
-            <tr className="bg-blue-500 text-white">
-              <th className="px-4 py-2 text-left">ID</th>
-              <th className="px-4 py-2 text-left">Email</th>
-              <th className="px-4 py-2 text-left">Age</th>
-            </tr>
-          </thead>
-          <tbody>
-            {user.map((row, index) => (
-              <tr key={index} className="border-b">
-                <td className="px-4 py-2">{row.id}</td>
-                <td className="px-4 py-2">{row.email}</td>
-                <td className="px-4 py-2">{row.role}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-  
-        {/* Card-style table for small screens */}
-        <div className="sm:hidden">
-          {user.map((row, index) => (
-            <div
-              key={index}
-              className="bg-white shadow-md rounded-lg p-4 mb-4 border border-gray-200"
-            >
-              <div className="flex flex-col">
-                <div className="text-lg font-semibold text-blue-600">ID: {row.id}</div>
-                <div className="text-sm text-gray-700">Name: {row.email}</div>
-                <div className="text-sm text-gray-700">Age: {row.role}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+
+        <div className='w-4xl mt-8 mx-auto'>
+   <Paper sx={{ height: 400, width: '100%' }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        initialState={{ pagination: { paginationModel } }}
+        pageSizeOptions={[5, 10]}
+        checkboxSelection
+        sx={{ border: 0 }}
+      />
+    </Paper>
+   </div>
       </div>
       )
     }

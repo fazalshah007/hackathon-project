@@ -1,23 +1,26 @@
 
 import React, { useEffect, useState } from 'react';
-import Inventory2Icon from '@mui/icons-material/Inventory2';
-import SearchIcon from '@mui/icons-material/Search';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { collection, getDocs } from 'firebase/firestore';
+import CloseIcon from '@mui/icons-material/Close';
+
+import { collection, deleteDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
 
 import Loader from '../../../components/Loader'
+import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 
 
 function Inventory() {
 
-
   const [usersInventory, setUsersInventory] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [isOpenBox, setIsOpenBox] = useState(false)
+  const [reservation, setReservation] = React.useState('');
+  const [popupData, setPopupData] = useState(null)
+  const [reRender, setReRender] = useState(false)
 
 
   const fetchAllRoomInventory = async () => {
@@ -40,6 +43,7 @@ function Inventory() {
           id: doc.id,
           name: doc.data().name, 
           email: user.email, 
+          customerUserId:user.userId,
           price: doc.data().price,
           capacity: doc.data().capacity, 
           roomStatus: doc.data().roomStatus, 
@@ -51,58 +55,116 @@ function Inventory() {
       }
   
       setUsersInventory(finalData); 
+     
+      
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
   };
+
+
+
+  const updateReservation = (data) => {
+    setIsOpenBox(true)
+    setPopupData(data)
+    setReservation(data.roomStatus)
+
+   
+    
+  }
+
+  const saveDataForReservation = async () => {
+
+     const updateRef = doc(db, "inventory",popupData.customerUserId, "bookRoom", popupData.id)
+    await updateDoc(updateRef,{
+      roomStatus: reservation
+    })
+
+    setIsOpenBox(false)
+    setReRender(!reRender)
+
+
+  }
+
+  const deleteDataForReservation = async (inventoryData) => {
+    
+
+     const deleteRef = doc(db, "inventory",inventoryData.customerUserId, "bookRoom", inventoryData.id)
+    await deleteDoc(deleteRef)
+
+    setReRender(!reRender)
+
+
+  }
   
 
-  
 
 useEffect(() => {
 
     fetchAllRoomInventory()
 
-},[])
+},[reRender])
 
 
 
   return (
 <>
 {
+  isOpenBox ? (
+    <div className='transparent-black absolute top-0 left-0 w-full h-screen z-40 grid place-items-center'>
+  <div className='w-2xl h-96 bg-white rounded-2xl opacity-100'>
+
+    <div className='flex justify-between p-4'>
+    <h1 className='text-2xl font-bold uppercase'>Confirm Room</h1>
+    <span onClick={() => { setIsOpenBox(false) }} className='bg-black text-white rounded-full p-2' ><CloseIcon  /></span>
+    </div>
+    <div className='grid grid-cols-2'>
+      <h1 className='text-md mt-4 ml-8 font-bold uppercase'>Room Name</h1>   <h1 className='mt-4 text-md uppercase'>{popupData?.name}</h1>
+      <h1 className='text-md mt-4 ml-8 font-bold uppercase'>email</h1> <h1 className='mt-4 text-md uppercase'>{popupData?.email}</h1>
+      <h1 className='text-md mt-4 ml-8 font-bold uppercase'>Price</h1> <h1 className='mt-4 text-md uppercase'>Rs {popupData?.price}</h1>
+      <h1 className='text-md mt-4 ml-8 font-bold uppercase'>Reservation</h1>
+      <span>
+      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="demo-simple-select-standard-label">Reserve</InputLabel>
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={reservation}
+          onChange={e=>setReservation(e.target.value)}
+          label="Age"
+        >
+         
+          <MenuItem value="occupied">Occupied</MenuItem>
+          <MenuItem value="active">Active</MenuItem>
+          
+        </Select>
+      </FormControl>
+      </span>
+      <div className='mt-4 ml-8'>
+      <Button onClick={saveDataForReservation} className=''  variant='contained'>Save</Button>
+      </div>
+      
+    </div>
+   
+  </div>
+
+</div>
+  ) : ('')
+}
+{
   loading ? (
     <div className='h-screen'>
       <Loader />
     </div>
   ) : (
-    <div className=" bg-gray-50 overflow-y-scroll">
+    <div className=" bg-gray-50 overflow-y-scroll no-scrollbar ">
 
 
     {/* Main Content */}
-    <main className="max-w-7xl mx-auto px-4 py-6">
-      {/* Search and Filter Bar */}
-      <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <div className="relative flex-1">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-          />
-        </div>
-        <div className="flex gap-3">
-          <button className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-            <FilterAltIcon className="h-4 w-4 mr-2" />
-            Filter
-          </button>
-          <button className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-            <KeyboardArrowUpIcon className="h-4 w-4 mr-2" />
-            Sort
-          </button>
-        </div>
-      </div>
+    <main className="min-w-7xl md:!min-w-full overflow-x-scroll no-scrollbar mx-auto px-4 py-6">
+
 
       {/* Products Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -146,10 +208,10 @@ useEffect(() => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex space-x-3">
-                    <button className="text-indigo-600 hover:text-indigo-900">
+                    <button onClick={() => { updateReservation(inventoryData) }}  className="text-indigo-600 hover:text-indigo-900">
                       <EditIcon className="h-5 w-5" />
                     </button>
-                    <button className="text-red-600 hover:text-red-900">
+                    <button onClick={() => { deleteDataForReservation(inventoryData) }} className="text-red-600 hover:text-red-900">
                       <DeleteOutlineIcon className="h-5 w-5" />
                     </button>
                   </div>
@@ -160,21 +222,7 @@ useEffect(() => {
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="mt-6 flex items-center justify-between">
-        <div className="text-sm text-gray-700">
-          Showing <span className="font-medium">1</span> to <span className="font-medium">5</span> of{' '}
-          <span className="font-medium">5</span> results
-        </div>
-        <div className="flex space-x-2">
-          <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
-            Previous
-          </button>
-          <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
-            Next
-          </button>
-        </div>
-      </div>
+   
     </main>
   </div>
   )

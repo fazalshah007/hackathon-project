@@ -1,22 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Loader from '../../components/Loader'
+import CloseIcon from '@mui/icons-material/Close';
 import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
 
 import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { toast } from 'react-toastify';
+
 
 
 const BookRoom = () => {
+
     const { id } = useParams(); 
+    const navigate = useNavigate();
 
     const userId = localStorage.getItem("authUserIdWithFirebase");
     const { email } = JSON.parse(localStorage.getItem("signInUserData"))
+
+    const [isOpenBox, setIsOpenBox] = useState(false)
     
     
-    const navigate = useNavigate();
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [phone, setPhone] = useState('')
+    const [paid, setPaid] = useState('');
     const [room, setRoom] = useState(null);
+
+
+    
+    
+
 
 
     const fetchDataRoom = async () => {
@@ -38,6 +54,47 @@ const BookRoom = () => {
     const handleSignIn = () => {
       localStorage.clear()
       navigate(`/`)
+    }
+
+
+    const handleDialogBox =() => {
+      setIsOpenBox(true)
+    }
+
+    const  HandleFormData = () => {
+
+      if(!firstName || !lastName || !phone){
+        toast('All feilds are required.', {
+                  position: "top-center",
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: false,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "dark",
+                  });
+        return;
+
+      }
+      
+      const paymentRef = collection(db,"payment")
+      addDoc(paymentRef,{
+        firstName,
+        lastName,
+        email:email && email,
+        phone,
+        paid,
+        payment: room.price,
+        roomsDetail : {
+          ...room
+        }
+      }).then(() => {
+
+        handleBooking()
+
+      })
+
     }
   
     const handleBooking = async () => {
@@ -63,6 +120,48 @@ const BookRoom = () => {
   
     return (
       <>
+      {
+  isOpenBox ? (
+    <div className='transparent-black absolute top-0 left-0 w-full h-screen z-40 grid place-items-center'>
+  <div className='w-2xl bg-white rounded-2xl opacity-100'>
+
+    <div className='flex justify-between p-4'>
+    <h1 className='text-2xl font-bold uppercase'>Confirm Room</h1>
+    <span onClick={() => { setIsOpenBox(false) }} className='bg-black text-white rounded-full p-2' ><CloseIcon  /></span>
+    </div>
+    <div className='grid grid-cols-4 gap-5 p-8'>
+
+    <TextField className='col-span-2' value={firstName} onChange={e => setFirstName(e.target.value)} label="First Name" variant="outlined" />
+    <TextField className='col-span-2' value={lastName} onChange={e => setLastName(e.target.value)} label="Last Name" variant="outlined" />
+    <TextField className='col-span-3' value={email} label="Email" variant="outlined" disabled />
+    <TextField className='col-span-1' value={`Rs ${room.price}`}  label="Payment" variant="outlined" disabled/>
+    <TextField className='col-span-2' value={phone} onChange={e => setPhone(e.target.value)} label="Phone No" variant="outlined"  />
+
+      <FormControl className='col-span-2' fullWidth>
+  <InputLabel id="demo-simple-select-label">Payment</InputLabel>
+  <Select
+    labelId="demo-simple-select-label"
+    id="demo-simple-select"
+    value={paid}
+    label="Age"
+    onChange={e=>setPaid(e.target.value)}
+  >
+    <MenuItem value="paid">Pay Now</MenuItem>
+    <MenuItem value="un-paid">Pay Later</MenuItem>
+    
+  </Select>
+</FormControl>    
+    <Button onClick={HandleFormData} variant='contained'>Book Now</Button>
+
+
+    </div>
+   
+   
+  </div>
+
+</div>
+  ) : ('')
+}
        <header className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
       <div onClick={() => { navigate(`/home`) } } className="flex items-center justify-between hover:cursor-pointer">
@@ -79,7 +178,7 @@ const BookRoom = () => {
       </div>
     </header>
 
-      <div className="w-full flex justify-center items-center h-screen mx-auto mt-8 bg-white rounded-lg shadow-lg p-8">
+      <div className="w-full flex justify-center items-center  mx-auto mt-16 bg-white rounded-lg shadow-lg p-8">
         <div className="flex flex-col md:flex-row">
           <img
             className="w-full md:w-1/2 h-72 object-cover rounded-md"
@@ -94,10 +193,10 @@ const BookRoom = () => {
               <div className="text-sm text-gray-600">Max {room.capacity} Guests</div>
             </div>
             <button
-              onClick={handleBooking}
+              onClick={handleDialogBox}
               className="mt-6 bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700"
             >
-              Book Now
+              Confirm Book
             </button>
           </div>
         </div>

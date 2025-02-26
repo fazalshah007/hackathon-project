@@ -4,7 +4,6 @@ import Home from "./pages/screens/Home"
 import Signup from "./pages/SignUp"
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
-// import ProtectedRoute from "./routes/ProtectedRoute";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Users from "./pages/dashboard/users/Users";
 import Customer from "./pages/screens/Customer";
@@ -13,6 +12,7 @@ import Rooms from "./pages/dashboard/rooms/Rooms";
 import Profile from "./pages/screens/Profile";
 import AllRooms from "./pages/dashboard/rooms/AllRooms";
 import Inventory from "./pages/dashboard/inventory/Inventory";
+import Payment from "./pages/dashboard/payment/Payment";
 
 function App() {
 
@@ -62,6 +62,7 @@ function App() {
           <Route path="rooms" element={ <Rooms /> } />
           <Route path="allrooms" element={ <AllRooms /> } />
           <Route path="inventory" element={ <Inventory /> } />
+          <Route path="payment" element={ <Payment /> } />
         </Route>
 
         <Route path="/login" element={userID && userData?.role === "user" ? (<Navigate to='/home' replace />) : userID && userData?.role === "admin" ? (<Navigate to='/admin' replace />) : (<SignIn setUserID={setUserID} setUserData={setUserData} />) } />
